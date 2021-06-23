@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/top-down.png-532578effcc0cd6a1d836d0841e24c7f.stex"
+path="res://.import/top-down.png-bbe80702b5fa0648fe1af94de7a73df4.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/top-down.png"
-dest_files=[ "res://.import/top-down.png-532578effcc0cd6a1d836d0841e24c7f.stex" ]
+source_file="res://assets/top-down.png"
+dest_files=[ "res://.import/top-down.png-bbe80702b5fa0648fe1af94de7a73df4.stex" ]
 
 [params]
 
