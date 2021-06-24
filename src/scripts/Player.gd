@@ -11,7 +11,7 @@ var dashing := false
 var cooling_down := false
 var speed := base_speed
 
-var teleported := false
+var first_teleport := false
 
 onready var sprite := get_node("player_anim")
 var last_dir := "walk_right"
@@ -23,14 +23,16 @@ func _physics_process(delta) -> void:
 	
 	# animate the player sprite
 	animate(direction)
+	
 	print(global_position)
-	if global_position.x >= 1190 and not teleported:
+	
+	if global_position.x >= 1190 and not first_teleport:
 		global_position.y += 1024
-		teleported = true
+		first_teleport = true
 	
 	# if the dash button is pressed, and the player isn't already dashing, start dashing
 	if Input.is_action_just_pressed("dash") and not dashing:
-		toggle_dot() # turns off the stamina dot
+		disable_dot() # turns off the stamina dot
 		speed = speed * 2 # adjusts movement speed
 		dashing = true
 	
@@ -53,7 +55,7 @@ func _physics_process(delta) -> void:
 		
 		# once cooldown is over, renable dashing and turn the dot back on
 		if (dash_cooldown <= 0):
-			toggle_dot()
+			enable_dot()
 			cooling_down = false
 			# reset cooldowns and dash duration
 			dash_cooldown = base_dash_cooldown
@@ -83,9 +85,13 @@ func animate(direction: Vector2):
 		sprite.play("walk_down")
 		sprite.stop()
 
-# turns the dash dot on or off
-func toggle_dot():
-	get_node("dash").visible = not get_node("dash").visible
+# turns the dash dot off
+func disable_dot():
+	get_node("dash").visible = false
+	
+# turns the dash dot on
+func enable_dot():
+	get_node("dash").visible = true
 	
 # does what it says
 func calculate_move_direction() -> Vector2:
