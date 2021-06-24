@@ -11,6 +11,8 @@ var dashing := false
 var cooling_down := false
 var speed := base_speed
 
+var teleported := false
+
 onready var sprite := get_node("player_anim")
 var last_dir := "walk_right"
 
@@ -21,12 +23,19 @@ func _physics_process(delta) -> void:
 	
 	# animate the player sprite
 	animate(direction)
+	print(global_position)
+	if global_position.x >= 1190 and not teleported:
+		global_position.y += 1024
+		teleported = true
 	
 	# if the dash button is pressed, and the player isn't already dashing, start dashing
 	if Input.is_action_just_pressed("dash") and not dashing:
 		toggle_dot() # turns off the stamina dot
 		speed = speed * 2 # adjusts movement speed
 		dashing = true
+	
+	if (Input.is_action_just_pressed("interact")):
+		global_position.x = global_position.x + 100
 	
 	# only dash for a certain period of time
 	if dashing:
