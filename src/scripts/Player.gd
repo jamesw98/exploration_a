@@ -11,8 +11,13 @@ var dashing := false
 var cooling_down := false
 var speed := base_speed
 
+onready var sprite := get_node("player_anim")
+var last_dir := "walk_right"
+
 func _physics_process(delta) -> void:
 	var direction := calculate_move_direction()
+	
+	animate(direction)
 	
 	if Input.is_action_just_pressed("dash") and not dashing:
 		toggle_dot()
@@ -34,9 +39,32 @@ func _physics_process(delta) -> void:
 			cooling_down = false
 			dash_cooldown = base_dash_cooldown
 			dash_time = base_dash_time
-		
+			
 	move_and_slide(direction * speed)
-	
+
+# ugly, ugly code
+func animate(direction: Vector2):
+	if direction.x > 0 and direction.y == 0:
+		sprite.play("walk_right")	
+	elif direction.x < 0 and direction.y == 0:
+		sprite.play("walk_left")
+	elif direction.x == 0 and direction.y > 0:
+		sprite.play("walk_down")
+	elif direction.x == 0 and direction.y < 0:
+		sprite.play("walk_up")
+	elif direction.x > 0 and direction.y > 0:
+		sprite.play("walk_diag_down_right")
+	elif direction.x < 0 and direction.y < 0:
+		sprite.play("walk_diag_up_left")
+	elif direction.x > 0 and direction.y < 0:
+		sprite.play("walk_diag_up_right")
+	elif direction.x < 0 and direction.y > 0:
+		sprite.play("walk_diag_down_left")
+	else:
+		sprite.play("walk_down")
+		sprite.stop()
+		
+
 func toggle_dot():
 	get_node("dash").visible = not get_node("dash").visible
 	
