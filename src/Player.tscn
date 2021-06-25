@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=2]
+[gd_scene load_steps=47 format=2]
 
 [ext_resource path="res://assets/player.png" type="Texture" id=1]
 [ext_resource path="res://assets/LightSprite.png" type="Texture" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://assets/player/stage_one.png" type="Texture" id=5]
 [ext_resource path="res://assets/pages/j1.png" type="Texture" id=6]
 [ext_resource path="res://assets/pages/j2.png" type="Texture" id=7]
+[ext_resource path="res://assets/pages/j3.png" type="Texture" id=8]
 
 [sub_resource type="AtlasTexture" id=1]
 flags = 4
@@ -245,7 +246,7 @@ script = ExtResource( 3 )
 
 [node name="player_anim" type="AnimatedSprite" parent="."]
 frames = SubResource( 37 )
-animation = "walk_left"
+animation = "diag_up_right_base"
 
 [node name="player" type="Sprite" parent="."]
 visible = false
@@ -285,6 +286,13 @@ light_mask = 0
 scale = Vector2( 0.572222, 0.572222 )
 z_index = 100
 texture = ExtResource( 7 )
+
+[node name="j3" type="Sprite" parent="."]
+visible = false
+light_mask = 0
+scale = Vector2( 0.572222, 0.572222 )
+z_index = 100
+texture = ExtResource( 8 )
 
 [node name="close_message" type="RichTextLabel" parent="."]
 visible = false

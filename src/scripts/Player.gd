@@ -1,35 +1,45 @@
 extends KinematicBody2D
 
+# when true, prints coords
 export var DEBUG := true
 
+# all the journal page names
+var PAGES = ["j1", "j2", "j3"]
+
+# speed related vars
 export var base_speed := 200
 export var base_dash_time := 50
 export var base_dash_cooldown := 200
 
+# cooldown related times
 var dash_time := base_dash_time
 var dash_cooldown := base_dash_cooldown
 
+# dash related bools
 var dashing := false
 var cooling_down := false
+
+# speed related vars
 var speed := base_speed
 
+# teleport vars
 var first_teleport := false
 var second_teleport := false
 
-onready var sprite := get_node("player_anim")
-var last_dir := "walk_right"
-
+# journal related vars
 var current_journal := -1
 var reading := false
 
-var PAGES = ["j1", "j2"]
+# sprite info
+onready var sprite := get_node("player_anim")
 
 # runs every frame
 func _physics_process(delta) -> void:
 	var direction = Vector2.ZERO
 	
-	# gets the direction the player is moving
+	# don't allow the player to move while reading a journal
 	if not reading:
+		# get the direction to move
 		direction = calculate_move_direction()
 	
 	# animate the player sprite
@@ -38,6 +48,7 @@ func _physics_process(delta) -> void:
 	# checks if there is teleportation to be done
 	check_teleport(direction)
 	
+	# if the player is in range to read a journal, check to see if they interact
 	if current_journal > 0:
 		check_journal()
 	
@@ -70,15 +81,20 @@ func _physics_process(delta) -> void:
 			dash_time = base_dash_time
 			
 	move_and_slide(direction * speed)
-	
+
+# checks if a player wants to read a journal page
 func check_journal():
+	# if the player presses 'e' and they aren't already reading, show the page
 	if Input.is_action_just_pressed("interact") and not reading:
-		reading = true
 		show_journal(current_journal)
+		reading = true
+	# if the player presses 'e' and they are reading, close the page
 	elif Input.is_action_just_pressed("interact") and reading:
 		close_journal(current_journal)
 		reading = false
 
+# teleportation for spooky(tm) hallways and rooms
+# sadly, there are lots of magic numbers in this function
 func check_teleport(direction):
 	if DEBUG:
 		print(global_position)
@@ -95,32 +111,12 @@ func check_teleport(direction):
 		global_position.y -= 608
 		second_teleport = true
 
-# ugly, ugly code, used to animate the character sprite
-func animate(direction: Vector2):
-	if direction.x > 0 and direction.y == 0:
-		sprite.play("walk_right")	
-	elif direction.x < 0 and direction.y == 0:
-		sprite.play("walk_left")
-	elif direction.x == 0 and direction.y > 0:
-		sprite.play("walk_down")
-	elif direction.x == 0 and direction.y < 0:
-		sprite.play("walk_up")
-	elif direction.x > 0 and direction.y > 0:
-		sprite.play("walk_diag_down_right")
-	elif direction.x < 0 and direction.y < 0:
-		sprite.play("walk_diag_up_left")
-	elif direction.x > 0 and direction.y < 0:
-		sprite.play("walk_diag_up_right")
-	elif direction.x < 0 and direction.y > 0:
-		sprite.play("walk_diag_down_left")
-	else:
-		sprite.play("walk_down")
-		sprite.stop()
-		
+# show a journal page
 func show_journal(journal_number):
 	get_node(PAGES[journal_number - 1]).visible = true
 	get_node("close_message").visible = true
 	
+# close a journal page
 func close_journal(journal_number):
 	get_node(PAGES[journal_number - 1]).visible = false
 	get_node("close_message").visible = false
@@ -140,6 +136,8 @@ func calculate_move_direction() -> Vector2:
 		Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
 	).normalized()
 
+
+# --- begin signal handling --------------------------------------------------------------------
 func _on_journal1_body_entered(body):
 	get_parent().get_node("journal_1/interact").visible = true
 	current_journal = 1
@@ -148,7 +146,6 @@ func _on_journal1_body_exited(body):
 	get_parent().get_node("journal_1/interact").visible = false
 	current_journal = 0
 
-
 func _on_journal2_body_entered(body):
 	get_parent().get_node("journal_2/interact").visible = true
 	current_journal = 2
@@ -156,3 +153,38 @@ func _on_journal2_body_entered(body):
 func _on_journal2_body_exited(body):
 	get_parent().get_node("journal_2/interact").visible = false
 	current_journal = 0
+	
+func _on_journal3_body_entered(body):
+	get_parent().get_node("journal_3/interact").visible = true
+	current_journal = 3
+
+func _on_journal3_body_exited(body):
+	get_parent().get_node("journal_3/interact").visible = false
+	current_journal = 0
+
+# --- end signal handling ----------------------------------------------------------------------
+
+# --- begin shame pit --------------------------------------------------------------------------
+# ugly, ugly code, used to animate the character sprite
+func animate(direction: Vector2):
+	if direction.x > 0 and direction.y == 0:
+		sprite.play("walk_right")
+	elif direction.x < 0 and direction.y == 0:
+		sprite.play("walk_left")
+	elif direction.x == 0 and direction.y > 0:
+		sprite.play("walk_down")
+	elif direction.x == 0 and direction.y < 0:
+		sprite.play("walk_up")
+	elif direction.x > 0 and direction.y > 0:
+		sprite.play("walk_diag_down_right")
+	elif direction.x < 0 and direction.y < 0:
+		sprite.play("walk_diag_up_left")
+	elif direction.x > 0 and direction.y < 0:
+		sprite.play("walk_diag_up_right")
+	elif direction.x < 0 and direction.y > 0:
+		sprite.play("walk_diag_down_left")
+	else:
+		sprite.play("walk_down")
+		sprite.stop()
+
+# there is no end to the shame pit
