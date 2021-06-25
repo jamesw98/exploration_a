@@ -141,12 +141,14 @@ tile_data = PoolIntArray( -327703, -2147483648, 0, -327702, 1, 0, -327701, 1, 0,
 
 [node name="journal_1" type="Sprite" parent="."]
 light_mask = 3
-position = Vector2( 320, 1664 )
+position = Vector2( -496, 24 )
 texture = ExtResource( 4 )
 
 [node name="interact" type="Sprite" parent="journal_1"]
 visible = false
+modulate = Color( 0.0980392, 0.101961, 0.101961, 1 )
 position = Vector2( 0, -16 )
+z_index = 1
 texture = ExtResource( 5 )
 
 [node name="journal1" type="Area2D" parent="journal_1"]
@@ -160,6 +162,7 @@ shape = SubResource( 10 )
 "player",
 ] instance=ExtResource( 3 )]
 position = Vector2( -688.41, 0 )
+DEBUG = false
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 current = true
