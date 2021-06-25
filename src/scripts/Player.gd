@@ -25,6 +25,7 @@ var speed := base_speed
 # teleport vars
 var first_teleport := false
 var second_teleport := false
+var third_teleport := false
 
 # journal related vars
 var current_journal := -1
@@ -113,13 +114,19 @@ func check_teleport(direction):
 
 # show a journal page
 func show_journal(journal_number):
+	get_node("page_flip").play()
 	get_node(PAGES[journal_number - 1]).visible = true
 	get_node("close_message").visible = true
 	
 # close a journal page
 func close_journal(journal_number):
+	get_node("page_flip_close").play()
 	get_node(PAGES[journal_number - 1]).visible = false
 	get_node("close_message").visible = false
+	
+	if journal_number == 3 and not third_teleport:
+		global_position.x += 3072
+		third_teleport = true
 
 # turns the dash dot off
 func disable_dot():
@@ -161,7 +168,15 @@ func _on_journal3_body_entered(body):
 func _on_journal3_body_exited(body):
 	get_parent().get_node("journal_3/interact").visible = false
 	current_journal = 0
+	
+func _on_journal3_dupe_body_entered():
+	get_parent().get_node("journal_3_dupe/interact").visible = true
+	current_journal = 3
 
+func _on_journal3_dupe_body_exited(body):
+	get_parent().get_node("journal_3_dupe/interact").visible = false
+	current_journal = 0
+	
 # --- end signal handling ----------------------------------------------------------------------
 
 # --- begin shame pit --------------------------------------------------------------------------
