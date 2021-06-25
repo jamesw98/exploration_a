@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+export var DEBUG := true
+
 export var base_speed := 200
 export var base_dash_time := 50
 export var base_dash_cooldown := 200
@@ -25,7 +27,8 @@ func _physics_process(delta) -> void:
 	# animate the player sprite
 	animate(direction)
 
-	check_teleport()
+	# checks if there is teleportation to be done
+	check_teleport(direction)
 	
 	# if the dash button is pressed, and the player isn't already dashing, start dashing
 	if Input.is_action_just_pressed("dash") and not dashing:
@@ -60,22 +63,21 @@ func _physics_process(delta) -> void:
 			
 	move_and_slide(direction * speed)
 
-func check_teleport():
-	print(global_position)
-	
-	var in_x = 1070 < global_position.x and global_position.x < 1040
-	var in_y = 1640 < global_position.y and global_position.y < 1750
+func check_teleport(direction):
+	#if DEBUG:
+	#	print(global_position)
 	
 	# initial hallway
 	if global_position.x >= 1190 and not first_teleport:
 		global_position.y += 1024
 		first_teleport = true
-		
-	elif (global_position.x > 1040 and global_position.x < 1090) and (1640 < global_position.y and global_position.y < 1750) and not second_teleport:
+	
+	# second hallway
+	elif (global_position.x > 1040 and global_position.x < 1090 \
+		  and 1640 < global_position.y and global_position.y < 1750 \
+		  and not second_teleport):
 		global_position.y -= 608
-		#global_position.x -= 250
-		second_teleport = false
-
+		second_teleport = true
 
 # ugly, ugly code, used to animate the character sprite
 func animate(direction: Vector2):
@@ -113,3 +115,9 @@ func calculate_move_direction() -> Vector2:
 		Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
 		Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
 	).normalized()
+
+func _on_journal1_body_entered(body):
+	get_parent().get_node("journal_1/interact").visible = true
+
+func _on_journal1_body_exited(body):
+	get_parent().get_node("journal_1/interact").visible = false
