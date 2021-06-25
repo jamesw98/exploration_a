@@ -1,10 +1,11 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://assets/top-down.png" type="Texture" id=1]
 [ext_resource path="res://assets/music/background.wav" type="AudioStream" id=2]
 [ext_resource path="res://src/Player.tscn" type="PackedScene" id=3]
 [ext_resource path="res://assets/books/book_slant_blue.png" type="Texture" id=4]
 [ext_resource path="res://assets/interact.png" type="Texture" id=5]
+[ext_resource path="res://assets/books/book_top_blue.png" type="Texture" id=6]
 
 [sub_resource type="OccluderPolygon2D" id=1]
 polygon = PoolVector2Array( 0, 0, 32, 0, 32, 32, 0, 32 )
@@ -121,7 +122,7 @@ points = PoolVector2Array( 0, 0, 32, 0, 32, 32, 0, 32 )
 9/z_index = 0
 
 [sub_resource type="RectangleShape2D" id=10]
-extents = Vector2( 32, 32 )
+extents = Vector2( 24, 32 )
 
 [node name="test_scene" type="Node2D"]
 
@@ -158,6 +159,25 @@ z_index = -1
 z_index = 1
 shape = SubResource( 10 )
 
+[node name="journal_2" type="Sprite" parent="."]
+light_mask = 3
+position = Vector2( 1376, 1064 )
+texture = ExtResource( 6 )
+
+[node name="interact" type="Sprite" parent="journal_2"]
+visible = false
+modulate = Color( 0.0980392, 0.101961, 0.101961, 1 )
+position = Vector2( 0, -16 )
+z_index = 1
+texture = ExtResource( 5 )
+
+[node name="journal2" type="Area2D" parent="journal_2"]
+z_index = -1
+
+[node name="interact_range" type="CollisionShape2D" parent="journal_2/journal2"]
+z_index = 1
+shape = SubResource( 10 )
+
 [node name="Player" parent="." groups=[
 "player",
 ] instance=ExtResource( 3 )]
@@ -169,3 +189,5 @@ current = true
 zoom = Vector2( 0.5, 0.5 )
 [connection signal="body_entered" from="journal_1/journal1" to="Player" method="_on_journal1_body_entered"]
 [connection signal="body_exited" from="journal_1/journal1" to="Player" method="_on_journal1_body_exited"]
+[connection signal="body_entered" from="journal_2/journal2" to="Player" method="_on_journal2_body_entered"]
+[connection signal="body_exited" from="journal_2/journal2" to="Player" method="_on_journal2_body_exited"]

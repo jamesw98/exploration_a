@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=2]
+[gd_scene load_steps=46 format=2]
 
 [ext_resource path="res://assets/player.png" type="Texture" id=1]
 [ext_resource path="res://assets/LightSprite.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://assets/dash.png" type="Texture" id=4]
 [ext_resource path="res://assets/player/stage_one.png" type="Texture" id=5]
 [ext_resource path="res://assets/pages/j1.png" type="Texture" id=6]
+[ext_resource path="res://assets/pages/j2.png" type="Texture" id=7]
 
 [sub_resource type="AtlasTexture" id=1]
 flags = 4
@@ -277,6 +278,13 @@ light_mask = 0
 scale = Vector2( 0.572222, 0.572222 )
 z_index = 100
 texture = ExtResource( 6 )
+
+[node name="j2" type="Sprite" parent="."]
+visible = false
+light_mask = 0
+scale = Vector2( 0.572222, 0.572222 )
+z_index = 100
+texture = ExtResource( 7 )
 
 [node name="close_message" type="RichTextLabel" parent="."]
 visible = false

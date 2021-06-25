@@ -147,3 +147,12 @@ func _on_journal1_body_entered(body):
 func _on_journal1_body_exited(body):
 	get_parent().get_node("journal_1/interact").visible = false
 	current_journal = 0
+
+
+func _on_journal2_body_entered(body):
+	get_parent().get_node("journal_2/interact").visible = true
+	current_journal = 2
+
+func _on_journal2_body_exited(body):
+	get_parent().get_node("journal_2/interact").visible = false
+	current_journal = 0
