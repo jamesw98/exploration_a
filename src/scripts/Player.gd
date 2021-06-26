@@ -7,29 +7,30 @@ export var DEBUG := true
 var PAGES = ["j1", "j2", "j3", "j4"]
 
 # speed related vars
-export var base_speed := 200
-export var base_dash_time := 50
+export var base_speed         := 200
+export var base_dash_time     := 50
 export var base_dash_cooldown := 200
 
 # cooldown related times
-var dash_time := base_dash_time
+var dash_time     := base_dash_time
 var dash_cooldown := base_dash_cooldown
 
 # dash related bools
-var dashing := false
+var dashing      := false
 var cooling_down := false
 
 # speed related vars
 var speed := base_speed
 
 # teleport vars
-var first_teleport := false
+var first_teleport  := false
 var second_teleport := false
-var third_teleport := false
+var third_teleport  := false
+var forth_teleport  := false
 
 # journal related vars
 var current_journal := -1
-var reading := false
+var reading         := false
 
 # sprite info
 onready var sprite := get_node("player_anim")
@@ -42,10 +43,7 @@ func _physics_process(delta) -> void:
 	if not reading:
 		# get the direction to move
 		direction = calculate_move_direction()
-	
-	# animate the player sprite
-	animate(direction)
-
+		
 	# checks if there is teleportation to be done
 	check_teleport(direction)
 	
@@ -58,14 +56,23 @@ func _physics_process(delta) -> void:
 		disable_dot() # turns off the stamina dot
 		speed = speed * 2 # adjusts movement speed
 		dashing = true
+		
+	if Input.is_action_just_pressed("walk") and not dashing:
+		speed = speed / 2
+	elif Input.is_action_just_released("walk"):
+		speed = base_speed
+		
+	# animate the player sprite
+	animate(direction, speed)
 	
 	# only dash for a certain period of time
 	if dashing:
 		dash_time -= 1
 	
 	# once dash time is over, reset speed and start cooldown
-	if dash_time <= 0:
+	if dash_time == 0:
 		speed = base_speed
+		dash_time = base_dash_time
 		cooling_down = true
 		dashing = false
 	
@@ -79,7 +86,6 @@ func _physics_process(delta) -> void:
 			cooling_down = false
 			# reset cooldowns and dash duration
 			dash_cooldown = base_dash_cooldown
-			dash_time = base_dash_time
 			
 	move_and_slide(direction * speed)
 
@@ -127,6 +133,11 @@ func close_journal(journal_number):
 	if journal_number == 3 and not third_teleport:
 		global_position.x += 3072
 		third_teleport = true
+	elif journal_number == 4 and not forth_teleport:
+		global_position.y += 0
+		forth_teleport = true
+	elif journal_number == 5:
+		pass
 
 # turns the dash dot off
 func disable_dot():
@@ -142,7 +153,6 @@ func calculate_move_direction() -> Vector2:
 		Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
 		Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
 	).normalized()
-
 
 # --- begin signal handling --------------------------------------------------------------------
 func _on_journal1_body_entered(body):
@@ -192,7 +202,7 @@ func _on_journal4_body_exited(body):
 
 # --- begin shame pit --------------------------------------------------------------------------
 # ugly, ugly code, used to animate the character sprite
-func animate(direction: Vector2):
+func animate(direction: Vector2, speed: int):
 	if direction.x > 0 and direction.y == 0:
 		sprite.play("walk_right")
 	elif direction.x < 0 and direction.y == 0:
@@ -212,14 +222,12 @@ func animate(direction: Vector2):
 	else:
 		sprite.play("walk_down")
 		sprite.stop()
+	
+	if speed < base_speed:	
+		sprite.speed_scale = 0.5
+	elif speed > base_speed:
+		sprite.speed_scale = 1.5
+	else:
+		sprite.speed_scale = 1.0
 
 # there is no end to the shame pit
-
-
-
-
-
-
-
-
-
