@@ -22,6 +22,9 @@ var cooling_down := false
 # speed related vars
 var speed := base_speed
 
+# whether or player is walking
+var walking := false
+
 # teleport vars
 var first_teleport  := false
 var second_teleport := false
@@ -59,9 +62,10 @@ func _physics_process(delta) -> void:
 		speed = base_speed * 2 # adjusts movement speed
 		dashing = true
 	elif Input.is_action_just_pressed("walk") and not dashing:
-		print("walking pressed")
+		walking = true
 		speed = base_speed / 2
 	elif Input.is_action_just_released("walk"):
+		walking = false
 		speed = base_speed
 		
 	# animate the player sprite
@@ -137,9 +141,15 @@ func close_journal(journal_number):
 		global_position.x += 3072
 		third_teleport = true
 	elif journal_number == 4 and not forth_teleport:
-		global_position.y += 0
+		global_position.x += 1120
 		forth_teleport = true
 	elif journal_number == 5:
+		puzzle_index += 1
+		global_position.y += 992
+		check_puzzle(puzzle_index)
+
+func check_puzzle(index):
+	if puzzle_index % 4 == 0:
 		pass
 
 # turns the dash dot off
@@ -158,6 +168,12 @@ func calculate_move_direction() -> Vector2:
 	).normalized()
 
 # --- begin signal handling --------------------------------------------------------------------
+func _on_infinite_hallway_body_entered(body):
+	print("entered")
+	if body.get_name() == "Player":
+		if not walking:
+			global_position.x -= 64
+
 func _on_journal1_body_entered(body):
 	get_parent().get_node("journal_1/interact").visible = true
 	current_journal = 1
@@ -184,13 +200,11 @@ func _on_journal3_body_exited(body):
 	current_journal = 0
 	
 func _on_journal3_dupe_body_entered(body):
-	print("dupe entered")
 	get_parent().get_node("journal_3_dupe/interact").visible = true
 	current_journal = 3
 
 func _on_journal3_dupe_body_exited(body):
 	get_parent().get_node("journal_3_dupe/interact").visible = false
-	print("dupe exited")
 	current_journal = 0
 	
 func _on_journal4_body_entered(body):
@@ -199,6 +213,14 @@ func _on_journal4_body_entered(body):
 	
 func _on_journal4_body_exited(body):
 	get_parent().get_node("journal_4/interact").visible = false
+	current_journal = 0
+	
+func _on_journal5_body_entered(body):
+	get_parent().get_node("journal_5/interact").visible = true
+	current_journal = 5
+	
+func _on_journal5_body_exited(body):
+	get_parent().get_node("journal_5/interact").visible = false
 	current_journal = 0
 	
 # --- end signal handling ----------------------------------------------------------------------
@@ -226,6 +248,7 @@ func animate(direction: Vector2, speed: int):
 		sprite.play("walk_down")
 		sprite.stop()
 	
+	# adjust the sprite movement speed
 	if speed < base_speed:	
 		sprite.speed_scale = 0.5
 	elif speed > base_speed:
