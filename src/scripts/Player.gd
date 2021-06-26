@@ -4,7 +4,7 @@ extends KinematicBody2D
 export var DEBUG := true
 
 # all the journal page names
-var PAGES = ["j1", "j2", "j3"]
+var PAGES = ["j1", "j2", "j3", "j4"]
 
 # speed related vars
 export var base_speed := 200
@@ -158,6 +158,7 @@ func _on_journal2_body_entered(body):
 	current_journal = 2
 
 func _on_journal2_body_exited(body):
+	
 	get_parent().get_node("journal_2/interact").visible = false
 	current_journal = 0
 	
@@ -169,12 +170,22 @@ func _on_journal3_body_exited(body):
 	get_parent().get_node("journal_3/interact").visible = false
 	current_journal = 0
 	
-func _on_journal3_dupe_body_entered():
+func _on_journal3_dupe_body_entered(body):
+	print("dupe entered")
 	get_parent().get_node("journal_3_dupe/interact").visible = true
 	current_journal = 3
 
 func _on_journal3_dupe_body_exited(body):
 	get_parent().get_node("journal_3_dupe/interact").visible = false
+	print("dupe exited")
+	current_journal = 0
+	
+func _on_journal4_body_entered(body):
+	get_parent().get_node("journal_4/interact").visible = true
+	current_journal = 4
+	
+func _on_journal4_body_exited(body):
+	get_parent().get_node("journal_4/interact").visible = false
 	current_journal = 0
 	
 # --- end signal handling ----------------------------------------------------------------------
@@ -203,3 +214,12 @@ func animate(direction: Vector2):
 		sprite.stop()
 
 # there is no end to the shame pit
+
+
+
+
+
+
+
+
+
