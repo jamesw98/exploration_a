@@ -4,7 +4,7 @@ extends KinematicBody2D
 export var DEBUG := true
 
 # all the journal page names
-var PAGES = ["j1", "j2", "j3", "j4", "j5"]
+var PAGES = ["j1", "j2", "j3", "j4", "j5", "j6", "j7"]
 
 # speed related vars
 export var base_speed         := 200
@@ -35,7 +35,11 @@ var forth_teleport  := false
 var current_journal := -1
 var reading         := false
 
-var puzzle_index := 0
+var puzzle_started := false
+var dummy_5        := false
+var read_j6        := false
+var read_j7        := false
+var puzzle_index   := -1
 
 # sprite info
 onready var sprite := get_node("player_anim")
@@ -143,15 +147,32 @@ func close_journal(journal_number):
 	elif journal_number == 4 and not forth_teleport:
 		global_position.x += 1120
 		forth_teleport = true
-	elif journal_number == 5:
+	elif journal_number == 5 and not dummy_5:
 		puzzle_index += 1
-		global_position.y += 992
 		check_puzzle(puzzle_index)
-
+	elif journal_number == 6:
+		read_j6 = true
+	elif journal_number == 7:
+		read_j7 = true
+	
 func check_puzzle(index):
-	if puzzle_index % 4 == 0:
+	if read_j6 and read_j7:
+		# teleport to solution room
 		pass
-
+	
+	if puzzle_index % 4 == 0:
+		print("0")
+		global_position.y += 992
+	elif puzzle_index % 4 == 1:
+		print("1")
+		global_position.y += 1184
+	elif puzzle_index % 4 == 2:
+		print("2")
+		global_position.y += 2336
+	# go back to original room
+	elif puzzle_index % 4 == 3:
+		pass
+		
 # turns the dash dot off
 func disable_dot():
 	get_node("dash").visible = false
@@ -169,11 +190,10 @@ func calculate_move_direction() -> Vector2:
 
 # --- begin signal handling --------------------------------------------------------------------
 func _on_infinite_hallway_body_entered(body):
-	print("entered")
 	if body.get_name() == "Player":
-		if not walking:
+		if dashing or not walking:
 			global_position.x -= 64
-
+			
 func _on_journal1_body_entered(body):
 	get_parent().get_node("journal_1/interact").visible = true
 	current_journal = 1
@@ -187,7 +207,6 @@ func _on_journal2_body_entered(body):
 	current_journal = 2
 
 func _on_journal2_body_exited(body):
-	
 	get_parent().get_node("journal_2/interact").visible = false
 	current_journal = 0
 	
@@ -217,11 +236,42 @@ func _on_journal4_body_exited(body):
 	
 func _on_journal5_body_entered(body):
 	get_parent().get_node("journal_5/interact").visible = true
+	get_parent().get_node("journal_5_hall/interact").visible = true
+	get_parent().get_node("journal_5_updown/interact").visible = true
 	current_journal = 5
 	
 func _on_journal5_body_exited(body):
 	get_parent().get_node("journal_5/interact").visible = false
+	get_parent().get_node("journal_5_hall/interact").visible = false
+	get_parent().get_node("journal_5_updown/interact").visible = false
 	current_journal = 0
+	
+func _on_journal5_dummy_body_entered(body):
+	pass # Replace with function body.
+	get_parent().get_node("journal_5_dummy/interact").visible = true
+	current_journal = 5
+	dummy_5 = true
+	
+func _on_journal5_dummy_body_exited(body):
+	get_parent().get_node("journal_5_dummy/interact").visible = false
+	current_journal = 0
+	dummy_5 = false
+
+func _on_journal6_body_entered(body):
+	get_parent().get_node("journal_6/interact").visible = true
+	current_journal = 6
+	
+func _on_journal6_body_exited(body):
+	get_parent().get_node("journal_6/interact").visible = false
+	current_journal = 0
+
+func _on_journal7_body_entered(body):
+	get_parent().get_node("journal_7/interact").visible = true
+	current_journal = 7
+	
+func _on_journal7_body_exited(body):
+	get_parent().get_node("journal_7/interact").visible = false
+	current_journal = 0	
 	
 # --- end signal handling ----------------------------------------------------------------------
 
@@ -257,3 +307,9 @@ func animate(direction: Vector2, speed: int):
 		sprite.speed_scale = 1.0
 
 # there is no end to the shame pit
+
+
+
+
+
+
