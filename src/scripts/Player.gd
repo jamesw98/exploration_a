@@ -4,7 +4,7 @@ extends KinematicBody2D
 export var DEBUG := true
 
 # all the journal page names
-var PAGES = ["j1", "j2", "j3", "j4", "j5", "j6", "j7"]
+var PAGES := ["j1", "j2", "j3", "j4", "j5", "j6", "j7"]
 
 # speed related vars
 export var base_speed         := 200
@@ -35,11 +35,13 @@ var forth_teleport  := false
 var current_journal := -1
 var reading         := false
 
-var puzzle_started := false
-var dummy_5        := false
-var read_j6        := false
+# variables for this stage's puzzle
+var puzzle_started := false 
+var dummy_5        := false # for the dummy journal 5 in puzzle room 3
+var read_j6        := false 
 var read_j7        := false
-var puzzle_index   := -1
+var correct_order  := false
+var puzzle_index   := -1    # helps determine where the player should currently be
 
 # sprite info
 onready var sprite := get_node("player_anim")
@@ -62,15 +64,18 @@ func _physics_process(delta) -> void:
 	
 	# if the dash button is pressed, and the player isn't already dashing, start dashing
 	if Input.is_action_just_pressed("dash") and not dashing:
-		disable_dot() # turns off the stamina dot
-		speed = base_speed * 2 # adjusts movement speed
+		# turns off the stamina dot
+		disable_dot() 
+		speed = base_speed * 2 
 		dashing = true
+	# if the users holds space or ctrl, they will reduce their speed
 	elif Input.is_action_just_pressed("walk") and not dashing:
-		walking = true
 		speed = base_speed / 2
+		walking = true
+	# if the users lets go of space or ctrl, their speed will go back to normal
 	elif Input.is_action_just_released("walk"):
-		walking = false
 		speed = base_speed
+		walking = false
 		
 	# animate the player sprite
 	animate(direction, speed)
@@ -113,6 +118,7 @@ func check_journal():
 
 # teleportation for spooky(tm) hallways and rooms
 # sadly, there are lots of magic numbers in this function
+# TODO change this to just be collision rectangles
 func check_teleport(direction):
 	if DEBUG:
 		print(global_position)
@@ -141,6 +147,9 @@ func close_journal(journal_number):
 	get_node(PAGES[journal_number - 1]).visible = false
 	get_node("close_message").visible = false
 	
+	print(dummy_5)
+	
+	# used to set up some of the set pieces
 	if journal_number == 3 and not third_teleport:
 		global_position.x += 3072
 		third_teleport = true
@@ -149,18 +158,23 @@ func close_journal(journal_number):
 		forth_teleport = true
 	elif journal_number == 5 and not dummy_5:
 		puzzle_index += 1
+		# changes the current state of the puzzle
 		check_puzzle(puzzle_index)
 	elif journal_number == 6:
 		read_j6 = true
+		if not read_j7:
+			correct_order = true
 	elif journal_number == 7:
 		read_j7 = true
 	
 func check_puzzle(index):
 	if read_j6 and read_j7:
-		# teleport to solution room
-		pass
-	
-	if puzzle_index % 4 == 0:
+		print("solved")
+		if correct_order:
+			global_position.y += 2080
+		else:
+			global_position.y += 5600
+	elif puzzle_index % 4 == 0:
 		print("0")
 		global_position.y += 992
 	elif puzzle_index % 4 == 1:
@@ -171,8 +185,9 @@ func check_puzzle(index):
 		global_position.y += 2336
 	# go back to original room
 	elif puzzle_index % 4 == 3:
-		pass
-		
+		print("3")
+		global_position.y -= 4512
+	
 # turns the dash dot off
 func disable_dot():
 	get_node("dash").visible = false
@@ -238,16 +253,18 @@ func _on_journal5_body_entered(body):
 	get_parent().get_node("journal_5/interact").visible = true
 	get_parent().get_node("journal_5_hall/interact").visible = true
 	get_parent().get_node("journal_5_updown/interact").visible = true
+	get_parent().get_node("journal_5_deadend/interact").visible = true
 	current_journal = 5
 	
 func _on_journal5_body_exited(body):
 	get_parent().get_node("journal_5/interact").visible = false
 	get_parent().get_node("journal_5_hall/interact").visible = false
 	get_parent().get_node("journal_5_updown/interact").visible = false
+	get_parent().get_node("journal_5_deadend/interact").visible = false
 	current_journal = 0
+	dummy_5 = false
 	
 func _on_journal5_dummy_body_entered(body):
-	pass # Replace with function body.
 	get_parent().get_node("journal_5_dummy/interact").visible = true
 	current_journal = 5
 	dummy_5 = true
@@ -256,7 +273,7 @@ func _on_journal5_dummy_body_exited(body):
 	get_parent().get_node("journal_5_dummy/interact").visible = false
 	current_journal = 0
 	dummy_5 = false
-
+	
 func _on_journal6_body_entered(body):
 	get_parent().get_node("journal_6/interact").visible = true
 	current_journal = 6
@@ -273,8 +290,6 @@ func _on_journal7_body_exited(body):
 	get_parent().get_node("journal_7/interact").visible = false
 	current_journal = 0	
 	
-# --- end signal handling ----------------------------------------------------------------------
-
 # --- begin shame pit --------------------------------------------------------------------------
 # ugly, ugly code, used to animate the character sprite
 func animate(direction: Vector2, speed: int):
@@ -299,17 +314,17 @@ func animate(direction: Vector2, speed: int):
 		sprite.stop()
 	
 	# adjust the sprite movement speed
+	# sneaking
 	if speed < base_speed:	
 		sprite.speed_scale = 0.5
+	# dashing
 	elif speed > base_speed:
 		sprite.speed_scale = 1.5
+	# walking
 	else:
 		sprite.speed_scale = 1.0
 
 # there is no end to the shame pit
-
-
-
 
 
 
