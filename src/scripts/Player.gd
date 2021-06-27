@@ -210,85 +210,103 @@ func _on_infinite_hallway_body_entered(body):
 			global_position.x -= 64
 			
 func _on_journal1_body_entered(body):
-	get_parent().get_node("journal_1/interact").visible = true
-	current_journal = 1
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_1/interact").visible = true
+		current_journal = 1
 
 func _on_journal1_body_exited(body):
-	get_parent().get_node("journal_1/interact").visible = false
-	current_journal = 0
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_1/interact").visible = false
+		current_journal = 0
 
 func _on_journal2_body_entered(body):
-	get_parent().get_node("journal_2/interact").visible = true
-	current_journal = 2
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_2/interact").visible = true
+		current_journal = 2
 
 func _on_journal2_body_exited(body):
-	get_parent().get_node("journal_2/interact").visible = false
-	current_journal = 0
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_2/interact").visible = false
+		current_journal = 0
 	
 func _on_journal3_body_entered(body):
-	get_parent().get_node("journal_3/interact").visible = true
-	current_journal = 3
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_3/interact").visible = true
+		current_journal = 3
 
 func _on_journal3_body_exited(body):
-	get_parent().get_node("journal_3/interact").visible = false
-	current_journal = 0
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_3/interact").visible = false
+		current_journal = 0
 	
 func _on_journal3_dupe_body_entered(body):
-	get_parent().get_node("journal_3_dupe/interact").visible = true
-	current_journal = 3
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_3_dupe/interact").visible = true
+		current_journal = 3
 
 func _on_journal3_dupe_body_exited(body):
-	get_parent().get_node("journal_3_dupe/interact").visible = false
-	current_journal = 0
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_3_dupe/interact").visible = false
+		current_journal = 0
 	
 func _on_journal4_body_entered(body):
-	get_parent().get_node("journal_4/interact").visible = true
-	current_journal = 4
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_4/interact").visible = true
+		current_journal = 4
 	
 func _on_journal4_body_exited(body):
-	get_parent().get_node("journal_4/interact").visible = false
-	current_journal = 0
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_4/interact").visible = false
+		current_journal = 0
 	
 func _on_journal5_body_entered(body):
-	get_parent().get_node("journal_5/interact").visible = true
-	get_parent().get_node("journal_5_hall/interact").visible = true
-	get_parent().get_node("journal_5_updown/interact").visible = true
-	get_parent().get_node("journal_5_deadend/interact").visible = true
-	current_journal = 5
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_5/interact").visible = true
+		get_parent().get_node("journal_5_hall/interact").visible = true
+		get_parent().get_node("journal_5_updown/interact").visible = true
+		get_parent().get_node("journal_5_deadend/interact").visible = true
+		current_journal = 5
 	
 func _on_journal5_body_exited(body):
-	get_parent().get_node("journal_5/interact").visible = false
-	get_parent().get_node("journal_5_hall/interact").visible = false
-	get_parent().get_node("journal_5_updown/interact").visible = false
-	get_parent().get_node("journal_5_deadend/interact").visible = false
-	current_journal = 0
-	dummy_5 = false
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_5/interact").visible = false
+		get_parent().get_node("journal_5_hall/interact").visible = false
+		get_parent().get_node("journal_5_updown/interact").visible = false
+		get_parent().get_node("journal_5_deadend/interact").visible = false
+		current_journal = 0
+		dummy_5 = false
 	
 func _on_journal5_dummy_body_entered(body):
-	get_parent().get_node("journal_5_dummy/interact").visible = true
-	current_journal = 5
-	dummy_5 = true
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_5_dummy/interact").visible = true
+		current_journal = 5
+		dummy_5 = true
 	
 func _on_journal5_dummy_body_exited(body):
-	get_parent().get_node("journal_5_dummy/interact").visible = false
-	current_journal = 0
-	dummy_5 = false
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_5_dummy/interact").visible = false
+		current_journal = 0
+		dummy_5 = false
 	
 func _on_journal6_body_entered(body):
-	get_parent().get_node("journal_6/interact").visible = true
-	current_journal = 6
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_6/interact").visible = true
+		current_journal = 6
 	
 func _on_journal6_body_exited(body):
-	get_parent().get_node("journal_6/interact").visible = false
-	current_journal = 0
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_6/interact").visible = false
+		current_journal = 0
 
 func _on_journal7_body_entered(body):
-	get_parent().get_node("journal_7/interact").visible = true
-	current_journal = 7
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_7/interact").visible = true
+		current_journal = 7
 	
 func _on_journal7_body_exited(body):
-	get_parent().get_node("journal_7/interact").visible = false
-	current_journal = 0	
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_7/interact").visible = false
+		current_journal = 0	
 	
 # --- begin shame pit --------------------------------------------------------------------------
 # ugly, ugly code, used to animate the character sprite
