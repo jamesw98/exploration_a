@@ -4,7 +4,7 @@ extends KinematicBody2D
 export var DEBUG := true
 
 # all the journal page names
-var PAGES := ["j1", "j2", "j3", "j4", "j5", "j6", "j7"]
+var PAGES := ["j1", "j2", "j3", "j4", "j5", "j6", "j7", "j8"]
 
 # speed related vars
 export var base_speed         := 200
@@ -147,8 +147,6 @@ func close_journal(journal_number):
 	get_node(PAGES[journal_number - 1]).visible = false
 	get_node("close_message").visible = false
 	
-	print(dummy_5)
-	
 	# used to set up some of the set pieces
 	if journal_number == 3 and not third_teleport:
 		global_position.x += 3072
@@ -169,23 +167,18 @@ func close_journal(journal_number):
 	
 func check_puzzle(index):
 	if read_j6 and read_j7:
-		print("solved")
 		if correct_order:
 			global_position.y += 2080
 		else:
 			global_position.y += 5600
 	elif puzzle_index % 4 == 0:
-		print("0")
 		global_position.y += 992
 	elif puzzle_index % 4 == 1:
-		print("1")
 		global_position.y += 1184
 	elif puzzle_index % 4 == 2:
-		print("2")
 		global_position.y += 2336
 	# go back to original room
 	elif puzzle_index % 4 == 3:
-		print("3")
 		global_position.y -= 4512
 	
 # turns the dash dot off
@@ -307,6 +300,16 @@ func _on_journal7_body_exited(body):
 	if body.get_name() == "Player":
 		get_parent().get_node("journal_7/interact").visible = false
 		current_journal = 0	
+		
+func _on_journal8_body_entered(body):
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_8/interact").visible = true
+		current_journal = 8
+		
+func _on_journal8_body_exited(body):
+	if body.get_name() == "Player":
+		get_parent().get_node("journal_8/interact").visible = false
+		current_journal = 0
 	
 # --- begin shame pit --------------------------------------------------------------------------
 # ugly, ugly code, used to animate the character sprite
